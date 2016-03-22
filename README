@@ -14,3 +14,7 @@ Pick a corner and click.
 All the action occurs in polyCreate.js.
 
 The coordinates displayed on the screen come from positionHandler.js.
+
+Single-clicks create the polylines (with a collection of coordinates).
+
+Double-click will eventually create the polygon.
