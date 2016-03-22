@@ -1,0 +1,16 @@
+From the project folder, run the app:
+     node server.js
+
+Go to browser localhost:8080
+
+Enter your address in the search box.
+
+Zoom in to see your roof clearly.
+
+Click the Create button.
+
+Pick a corner and click.
+
+All the action occurs in polyCreate.js.
+
+The coordinates displayed on the screen come from positionHandler.js.
