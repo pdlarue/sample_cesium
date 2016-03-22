@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Cesium Sample</title>
+
+        <!-- SCRIPTS -->
+        <script src="javascripts/Cesium/Cesium.js"></script>
+        <script type='text/javascript'>
+        </script>
+        
+        <!-- STYLES -->
+        <link rel="stylesheet" type="text/css" href="javascripts/Cesium/Widgets/widgets.css">
+        <style>
+            @import url(javascripts/Cesium/Widgets/widgets.css);
+        </style>
+        <link rel="stylesheet" type="text/css" href="stylesheets/custom.css">
+        
+    </head>
+    <!--<body onload="body_onload();">-->
+    <body>
+        <div class="overlay">
+            <button id="createButton" class="cesium-button" onClick="createClicked()" >Create</button>
+            <button id="updateButton" class="cesium-button" onClick="updateClicked()" >Update</button>            
+        </div>
+
+        <div id="cesiumContainer"></div>
+        <script src="src/globals.js"></script>
+        <script src="src/index.js"></script>
+        <script src="src/positionHandler.js"></script>
+        <script src="src/polyCreate.js"></script>
+        <script src="src/polyUpdate.js"></script>
+        
+    </body>
+</html>

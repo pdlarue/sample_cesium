@@ -1,0 +1,24 @@
+{
+  "name": "sample_cesium",
+  "version": "1.0.0",
+  "description": "A sample app to draw polygon at ground level",
+  "keywords": [
+    "util",
+    "functional",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "Lucy",
+  "contributors": [],
+  "dependencies": {
+    "compression": "1.0.8",
+    "express": "~4.9.x",
+    "knockout.contextmenu": "^0.4.0",
+    "request": "2.36.0",
+    "yargs": "1.2.6"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}
