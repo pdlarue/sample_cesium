@@ -75,68 +75,66 @@ function clickAction(click) {
         }
         enableDoubleClick();
         enableDraw();
-        testMe(cartesian);
+        //testMe(cartesian);
     }
 }
 
-
-
-var pickedPosition;
-var scratchZoomPickRay = new Cesium.Ray();
-var scratchPickCartesian = new Cesium.Cartesian3();
-function testMe(mousePosition) {
-    if (Cesium.defined(scene.globe)) { 
-        if(scene.mode !== Cesium.SceneMode.SCENE2D) {
-            pickedPosition = pickGlobe(viewer, mousePosition, scratchPickCartesian);
-        } else {
-            pickedPosition = camera.getPickRay(mousePosition, scratchZoomPickRay).origin;
-        }
-    }
-}
-
-var pickGlobeScratchRay = new Cesium.Ray();
-var scratchDepthIntersection = new Cesium.Cartesian3();
-var scratchRayIntersection = new Cesium.Cartesian3();    
-function pickGlobe(viewer, mousePosition, result) {
-
-    var globe = scene.globe;
-    var camera = scene.camera;
-
-    if (!Cesium.defined(globe)) {
-        return undefined;
-    }
-
-    var depthIntersection;
-    if (scene.pickPositionSupported) {
-        depthIntersection = scene.pickPosition(mousePosition, scratchDepthIntersection);
-    }
-    
-    var ray = camera.getPickRay(mousePosition, pickGlobeScratchRay);
-    var rayIntersection = globe.pick(ray, scene, scratchRayIntersection);
-    
-    var pickDistance;
-    if(Cesium.defined(depthIntersection)) {
-        pickDistance = Cesium.Cartesian3.distance(depthIntersection, camera.positionWC);
-    } else {
-        pickDistance = Number.POSITIVE_INFINITY;
-    }
-
-    var rayDistance;
-    if(Cesium.defined(rayIntersection)) {
-        rayDistance = Cesium.Cartesian3.distance(rayIntersection, camera.positionWC);
-    } else {
-        rayDistance = Number.POSITIVE_INFINITY;
-    }
-    
-    var scratchCenterPosition = new Cesium.Cartesian3();
-    if (pickDistance < rayDistance) {
-        var cart = Cesium.Cartesian3.clone(depthIntersection, result);
-        return cart;
-    }
-    
-    var cart = Cesium.Cartesian3.clone(rayIntersection, result);
-    return cart;
-}
+//var pickedPosition;
+//var scratchZoomPickRay = new Cesium.Ray();
+//var scratchPickCartesian = new Cesium.Cartesian3();
+//function testMe(mousePosition) {
+//    if (Cesium.defined(scene.globe)) { 
+//        if(scene.mode !== Cesium.SceneMode.SCENE2D) {
+//            pickedPosition = pickGlobe(viewer, mousePosition, scratchPickCartesian);
+//        } else {
+//            pickedPosition = camera.getPickRay(mousePosition, scratchZoomPickRay).origin;
+//        }
+//    }
+//}
+//
+//var pickGlobeScratchRay = new Cesium.Ray();
+//var scratchDepthIntersection = new Cesium.Cartesian3();
+//var scratchRayIntersection = new Cesium.Cartesian3();    
+//function pickGlobe(viewer, mousePosition, result) {
+//
+//    var globe = scene.globe;
+//    var camera = scene.camera;
+//
+//    if (!Cesium.defined(globe)) {
+//        return undefined;
+//    }
+//
+//    var depthIntersection;
+//    if (scene.pickPositionSupported) {
+//        depthIntersection = scene.pickPosition(mousePosition, scratchDepthIntersection);
+//    }
+//    
+//    var ray = camera.getPickRay(mousePosition, pickGlobeScratchRay);
+//    var rayIntersection = globe.pick(ray, scene, scratchRayIntersection);
+//    
+//    var pickDistance;
+//    if(Cesium.defined(depthIntersection)) {
+//        pickDistance = Cesium.Cartesian3.distance(depthIntersection, camera.positionWC);
+//    } else {
+//        pickDistance = Number.POSITIVE_INFINITY;
+//    }
+//
+//    var rayDistance;
+//    if(Cesium.defined(rayIntersection)) {
+//        rayDistance = Cesium.Cartesian3.distance(rayIntersection, camera.positionWC);
+//    } else {
+//        rayDistance = Number.POSITIVE_INFINITY;
+//    }
+//    
+//    var scratchCenterPosition = new Cesium.Cartesian3();
+//    if (pickDistance < rayDistance) {
+//        var cart = Cesium.Cartesian3.clone(depthIntersection, result);
+//        return cart;
+//    }
+//    
+//    var cart = Cesium.Cartesian3.clone(rayIntersection, result);
+//    return cart;
+//}
 
 // onDoubleClick close polygon
 function doubleClickAction(doubleClick) {
@@ -146,12 +144,60 @@ function doubleClickAction(doubleClick) {
         console.log("Creating Asset");
 //        socket.emit('newElement', asset.cType, asset);
 //        self.createAsset('add', collection);
+        create();
+        //createPolygon();
         viewer.entities.remove(entity);
         viewer.entities.remove(newPolygon);
         viewer.entities.remove(newOutline);
 
         finish();
     }
+}
+
+function create() {
+    var positions = []; // xy position array    
+    var updatedPositions = collection.latlonalt;
+
+    var cesiumTerrainProvider = new Cesium.CesiumTerrainProvider({
+        url: '//assets.agi.com/stk-terrain/world'
+    });
+    viewer.terrainProvider = cesiumTerrainProvider;
+
+// go off and sample the terrain layer to get interpolated z values for each position..
+    var promise = Cesium.sampleTerrain(cesiumTerrainProvider, 11, positions);
+    Cesium.when(promise, function (updatedPositions) {
+
+        var cartesianPositions = Cesium.Ellipsoid.WGS84.cartographicArrayToCartesianArray(updatedPositions);
+
+        var polygon = {
+                hierarchy: cartesianPositions,
+                outline: true,
+                outlineColor: Cesium.Color.RED,
+                outlineWidth: 9,
+                perPositionHeight: true,
+                material: Cesium.Color.BLUE.withAlpha(0.0)
+            };
+
+        var entity = viewer.entities.add(polygon);
+
+        viewer.flyTo(entity);
+
+    });
+}
+
+function createPolygon() {
+    var result = [];
+    var orangePolygon = viewer.entities.add({
+        name : 'Orange polygon with per-position heights and outline',
+        polygon : {
+            hierarchy : Cesium.Cartesian3.fromDegreesArrayHeights(collection.latlonalt, ellipsoid, result),
+            extrudedHeight: 0,
+            perPositionHeight : true,
+            material : Cesium.Color.ORANGE.withAlpha(0.5),
+            outline : true,
+            outlineColor : Cesium.Color.BLACK
+        }
+    });
 }
 
 function draw(movement) {
