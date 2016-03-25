@@ -16,7 +16,7 @@ var entity;
 var newPolygon;
 var newOutline;
 var canvas = document.getElementById("canvas");
-var gl = canvas.getContext("webgl");
-var extensions = gl.getSupportedExtensions();
+//var gl = canvas.getContext("webgl");
+//var extensions = gl.getSupportedExtensions();
 
 
