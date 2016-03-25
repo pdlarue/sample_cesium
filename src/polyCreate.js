@@ -75,66 +75,66 @@ function clickAction(click) {
         }
         enableDoubleClick();
         enableDraw();
-        //testMe(cartesian);
+        testMe(click.position);
     }
 }
 
-//var pickedPosition;
-//var scratchZoomPickRay = new Cesium.Ray();
-//var scratchPickCartesian = new Cesium.Cartesian3();
-//function testMe(mousePosition) {
-//    if (Cesium.defined(scene.globe)) { 
-//        if(scene.mode !== Cesium.SceneMode.SCENE2D) {
-//            pickedPosition = pickGlobe(viewer, mousePosition, scratchPickCartesian);
-//        } else {
-//            pickedPosition = camera.getPickRay(mousePosition, scratchZoomPickRay).origin;
-//        }
-//    }
-//}
-//
-//var pickGlobeScratchRay = new Cesium.Ray();
-//var scratchDepthIntersection = new Cesium.Cartesian3();
-//var scratchRayIntersection = new Cesium.Cartesian3();    
-//function pickGlobe(viewer, mousePosition, result) {
-//
-//    var globe = scene.globe;
-//    var camera = scene.camera;
-//
-//    if (!Cesium.defined(globe)) {
-//        return undefined;
-//    }
-//
-//    var depthIntersection;
-//    if (scene.pickPositionSupported) {
-//        depthIntersection = scene.pickPosition(mousePosition, scratchDepthIntersection);
-//    }
-//    
-//    var ray = camera.getPickRay(mousePosition, pickGlobeScratchRay);
-//    var rayIntersection = globe.pick(ray, scene, scratchRayIntersection);
-//    
-//    var pickDistance;
-//    if(Cesium.defined(depthIntersection)) {
-//        pickDistance = Cesium.Cartesian3.distance(depthIntersection, camera.positionWC);
-//    } else {
-//        pickDistance = Number.POSITIVE_INFINITY;
-//    }
-//
-//    var rayDistance;
-//    if(Cesium.defined(rayIntersection)) {
-//        rayDistance = Cesium.Cartesian3.distance(rayIntersection, camera.positionWC);
-//    } else {
-//        rayDistance = Number.POSITIVE_INFINITY;
-//    }
-//    
-//    var scratchCenterPosition = new Cesium.Cartesian3();
-//    if (pickDistance < rayDistance) {
-//        var cart = Cesium.Cartesian3.clone(depthIntersection, result);
-//        return cart;
-//    }
-//    
-//    var cart = Cesium.Cartesian3.clone(rayIntersection, result);
-//    return cart;
-//}
+var pickedPosition;
+var scratchZoomPickRay = new Cesium.Ray();
+var scratchPickCartesian = new Cesium.Cartesian3();
+function testMe(c2MousePosition) {
+    if (Cesium.defined(scene.globe)) { 
+        if(scene.mode !== Cesium.SceneMode.SCENE2D) {
+            pickedPosition = pickGlobe(viewer, c2MousePosition, scratchPickCartesian);
+        } else {
+            pickedPosition = camera.getPickRay(c2MousePosition, scratchZoomPickRay).origin;
+        }
+    }
+}
+
+var pickGlobeScratchRay = new Cesium.Ray();
+var scratchDepthIntersection = new Cesium.Cartesian3();
+var scratchRayIntersection = new Cesium.Cartesian3();  
+function pickGlobe(viewer, c2MousePosition, result) {   
+
+    var globe = scene.globe;
+    var camera = scene.camera;
+
+    if (!Cesium.defined(globe)) {
+        return undefined;
+    }
+    
+    var depthIntersection;
+    if (scene.pickPositionSupported) {
+        depthIntersection = scene.pickPosition(c2MousePosition, scratchDepthIntersection);
+    }
+
+    var ray = camera.getPickRay(c2MousePosition, pickGlobeScratchRay);
+    var rayIntersection = globe.pick(ray, scene, scratchRayIntersection);   
+    
+    var pickDistance;
+    if(Cesium.defined(depthIntersection)) {
+        pickDistance = Cesium.Cartesian3.distance(depthIntersection, camera.positionWC);
+    } else {
+        pickDistance = Number.POSITIVE_INFINITY;
+    }
+
+    var rayDistance;
+    if(Cesium.defined(rayIntersection)) {
+        rayDistance = Cesium.Cartesian3.distance(rayIntersection, camera.positionWC);
+    } else {
+        rayDistance = Number.POSITIVE_INFINITY;
+    }
+    
+    var scratchCenterPosition = new Cesium.Cartesian3();
+    if (pickDistance < rayDistance) {
+        var cart = Cesium.Cartesian3.clone(depthIntersection, result);
+        return cart;
+    }
+    
+    var cart = Cesium.Cartesian3.clone(rayIntersection, result);
+    return cart;
+}
 
 // onDoubleClick close polygon
 function doubleClickAction(doubleClick) {
